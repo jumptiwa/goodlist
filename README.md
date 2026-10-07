@@ -29,7 +29,7 @@ The local SQLite database is created at `data/tasks.sqlite`. Set `DATABASE_PATH`
 
 ## Deploy to Vercel
 
-Import this repository into Vercel. The Vite build serves the frontend as static assets, while `api/[...path].ts` routes API requests to the Express app as a Vercel Node.js Function. The handler normalizes the `/api` prefix because function runtimes may pass the matched catch-all path with that prefix removed. The API function implements registration, login, logout, session lookup, and user-scoped task operations.
+Import this repository into Vercel. The Vite build serves the frontend as static assets. Vercel routes every `/api/:path*` URL through a rewrite to the concrete `api/index.ts` Node.js Function, which restores the original API path before passing the request to Express. This avoids relying on a catch-all function filename for deeply nested routes such as `/api/auth/register`. The API function implements registration, login, logout, session lookup, and user-scoped task operations.
 
 The demo defaults to `/tmp/goodlist.sqlite` on Vercel because the deployment filesystem is read-only except for temporary storage. That file is **ephemeral**: it may be removed when an instance is recycled, and separate serverless instances do not share it. Accounts, sessions, and tasks can therefore disappear or appear inconsistent. This setup is only suitable for trying the demo, not for reliable production data.
 
