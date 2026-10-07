@@ -15,7 +15,12 @@ export type User = {
   password_hash: string;
 };
 
-export function createDatabase(filename = process.env.DATABASE_PATH ?? "./data/tasks.sqlite") {
+function defaultDatabasePath() {
+  if (process.env.DATABASE_PATH) return process.env.DATABASE_PATH;
+  return process.env.VERCEL ? "/tmp/goodlist.sqlite" : "./data/tasks.sqlite";
+}
+
+export function createDatabase(filename = defaultDatabasePath()) {
   const path = filename === ":memory:" ? filename : resolve(filename);
   if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
 
